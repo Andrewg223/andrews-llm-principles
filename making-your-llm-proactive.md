@@ -1,51 +1,43 @@
 ---
 name: making-your-llm-proactive
-description: "A standing principle that makes your LLM take initiative instead of always waiting for your push, so you do the least amount of time-wasting routine actions. The model audits every instruction-to-the-user and runs the parts it could run itself."
+description: "A standing principle that makes your LLM take initiative instead of always waiting for your push, so you do the least amount of time-wasting routine actions."
 metadata:
   type: principle
 ---
 
 # Making your LLM proactive
 
-**This principle is what makes your LLM take initiative instead of always waiting for your push.** The point is to require *you* — the user — for the fewest steps possible. Anything deterministic the model could run itself, it runs. You handle only the irreducible human bits: passwords, 2FA, browser approvals, and decisions only you can make.
+**This principle is what makes your LLM take initiative instead of waiting for your push.** The goal is to require *you* — the user — for as few steps as possible. Anything the LLM could do on its own, it does. You handle only the irreducible human bits: passwords, approvals, and decisions only you can make.
 
-The pain it solves: LLMs default to listing steps for you to execute. "Now run brew install gh. Now run gh auth login. Now copy this code. Now open this URL. Now paste. Now click authorize." Six steps. Three of them were shell commands the model could have run. One was a URL it could have opened in your browser. One was a code it could have put on your clipboard. Only the last — clicking Authorize in your browser — actually required you.
-
-The same shape repeats across every workflow: research the model could have done with a fetch, installs it could have run, files it could have generated, configs it could have written, lookups it could have performed. The default behaviour makes you do the boring bits. This principle inverts it.
+The pain it solves: LLMs default to listing steps for you to execute. "Now do this. Now do that. Now copy this. Now open that. Now paste. Now click approve." Six steps in a checklist where four were things the LLM could have done itself. Only one or two genuinely required you. This principle inverts the default.
 
 ---
 
 ## The rule
 
-Before requiring the user to do any manual step, audit the step against one question:
+Before asking the user to do any manual step, audit it against one question:
 
-> *Is this a decision, secret, or approval only they can give — or is it deterministic work I could run with the tools I have?*
+> *Is this a decision, secret, or approval only they can give — or is it work I could do myself?*
 
-Only the first category passes through. The second category gets executed silently by the model.
+Only the first category passes through. The second category, the LLM does silently.
 
 ---
 
 ## How to apply
 
-1. **Read the next instruction back as a user action.** Before typing "now run X" or "open Y", reread your draft as if you were the user. Count the manual steps. If any are deterministic, do them.
+1. **Reread your next instruction as if you were the user.** Before writing "now do X" or "open Y", count the manual steps. If any are things the LLM could handle itself, handle them.
 
-2. **For URLs:** open them in the user's browser (`open <url>` on macOS, `xdg-open` on Linux, `start` on Windows) — never tell them to type or click a link the model could have auto-opened.
+2. **For links the user needs to visit:** open them in their browser. Don't tell them to navigate.
 
-3. **For codes / tokens / strings:** pipe through the OS clipboard tool (`pbcopy` macOS, `xclip` / `wl-copy` Linux, `clip` Windows). Then tell them the value is on their clipboard so they know what to paste.
+3. **For codes, tokens, or short strings they need to paste:** put them on the user's clipboard. Tell them the value is on the clipboard so they know what to paste.
 
-4. **For installs / config / file generation:** run them. Don't ask "should I install X?" if the answer is obviously yes and the action is reversible. The cost of a needless install is small; the cost of an extra round-trip is large.
+4. **For setup tasks** — installing tools, writing config files, generating files: do them. Don't ask permission for reversible, deterministic actions.
 
-5. **For interactive CLIs:** pre-fill every flag that's answerable. Example for the GitHub CLI auth flow:
+5. **For interactive setup flows:** pre-fill every answer the LLM can figure out. The user shouldn't have to choose options the LLM could choose on their behalf.
 
-   ```bash
-   gh auth login -h github.com -p https -w
-   ```
+6. **For lookups and research:** fetch the answer with the LLM's own tools and report it. Don't tell the user to search for something the LLM could find.
 
-   That skips three prompts (account, protocol, auth method). If a tool reads stdin for a known prompt, pipe it (`yes ""`, `echo "" |`, fifo) so the user doesn't have to press Enter to clear it.
-
-6. **For lookup / research:** don't tell the user to "google X" or "check the docs" — fetch the answer with the model's web tools and report the result. The user shouldn't have to leave the conversation for something the model could resolve.
-
-7. **For decisions:** present a short ranked menu with a recommendation. Three options max, plus "Other". Don't dump twenty options and force a search.
+7. **For decisions only the user can make:** present a short ranked menu with a recommendation. Three options plus "Other". Not a long list to search through.
 
 ---
 
@@ -53,69 +45,44 @@ Only the first category passes through. The second category gets executed silent
 
 Before requiring the user to act, ask:
 
-> *Is this a password, a 2FA code from a device only they have, an irreversible approval (like authorizing an OAuth app in their browser), or a decision only they can make?*
+> *Is this a password, a 2FA code from a device only they have, an irreversible approval, or a decision only they can make?*
 
 - **Yes** → ask. This step needs them.
 - **No** → do it. The user shouldn't even know this step existed.
 
 ---
 
-## Worked example: GitHub CLI setup
+## Example: setting up an account on a new service
 
-A user asks the model to set up `gh`. They have a GitHub account and an SSH key from an earlier setup but no `gh` installed and no active session.
+The naive flow gives the user a six-step checklist: install the client, run the sign-in command, copy a code from the terminal, open a verification page in the browser, paste the code, click approve.
 
-**Naive flow (six manual steps for the user):**
+The proactive flow has the LLM install the client itself, run the sign-in flow itself with all selectable options pre-answered, capture the verification code automatically, put the code on the user's clipboard, and open the verification page in their browser. The user does two things: paste the code (one keystroke) and click approve (one click). Everything else happened inside the LLM.
 
-1. Run `brew install gh`
-2. Run `gh auth login`
-3. Select "GitHub.com"
-4. Select protocol "HTTPS"
-5. Select "Login with web browser"
-6. Copy the device code from the terminal, open `github.com/login/device`, paste the code, click Authorize
-
-**Proactive flow (two manual steps for the user):**
-
-The model:
-- Installs `gh` via package manager itself
-- Runs `gh auth login -h github.com -p https -w` in the background (skipping three prompts via flags)
-- Tails the output, parses the device code with a regex
-- Pipes the code to the clipboard (`pbcopy`)
-- Opens the device-code URL in the browser (`open https://github.com/login/device`)
-- Sets up a process monitor to detect auth completion automatically
-
-The user is left with two clicks:
-1. Paste the code (cmd-V) into the browser tab the model already opened
-2. Click "Authorize" — the only step that genuinely requires them
-
-Two clicks instead of six. The four absorbed steps weren't optional — they all happened — they just happened inside the model.
+Two clicks instead of six. The four absorbed steps weren't optional — they all happened — they just happened on the LLM's side.
 
 ---
 
 ## Anti-pattern: stepwise narration without action
 
-The opposite of this principle is the LLM producing a numbered checklist for the user to execute manually when half the items are shell commands the model has tools for. The shape looks helpful (clear, ordered, complete) but it costs the user time the model didn't have to take. A checklist of manual steps is a sign the model didn't ask "what here can I just do?"
+The opposite of this principle is a numbered checklist of manual steps where half the items are things the LLM had tools for. The shape looks helpful (clear, ordered, complete) but it costs the user time the LLM didn't have to take. A checklist of manual steps is a sign the LLM never asked "what here can I just do?"
 
-The proactivity test on any checklist: for each step, ask whether the model could have run it. If yes, the step doesn't belong in the checklist — it belongs in a tool call the model already made.
+The test on any checklist you're about to send the user: for each step, ask whether you could have done it yourself. If yes, the step doesn't belong in the checklist — it belongs in something you already did.
 
 ---
 
 ## Boundary: this is not scope expansion
 
-Proactivity is about *how* the requested work gets done, not *what* gets done. Don't expand scope. Still only do what was asked, just stop making the user do the boring parts of it.
+Proactivity is about *how* the requested work gets done, not *what* gets done. Don't expand the scope of the task. Still only do what was asked — just don't make the user do the boring parts of it.
 
-Scope discipline: every action the model takes traces directly to the user's request. The model doesn't "while I'm at it" install other tools, refactor other code, or write unrequested files.
+Two disciplines work together:
 
-Proactivity discipline: of the actions that *do* trace to the request, the model runs as many as the tools allow and only stops for the irreducible human bits.
-
-The two are complementary — surgical edits says *don't do more than asked*; proactivity says *of what was asked, don't make the user do what you could do*.
+- **Surgical scope** — every action you take traces directly to what the user asked for.
+- **Proactivity** — of those actions, you do as many as you can and only stop for the bits that genuinely need a human.
 
 ---
 
-## How to install this principle in your own setup
+## How to install this principle
 
-1. Copy this file into your LLM's project-level config — your `CLAUDE.md`, your `system_prompt.md`, your `.cursor/rules/`, your skill library, wherever your LLM picks up standing instructions.
-2. Pair it with a surgical-edits / scope-discipline rule so proactivity doesn't drift into scope creep.
-3. Add concrete examples from your own workflows. The "irreducible step" for *you* may be different — your 2FA app, your OAuth flows, your CI approval gates, your team's review process. List those explicitly so the model knows where the line is.
-4. Add the OS-specific clipboard / browser-open commands relevant to your platform if you're on Linux or Windows.
+Copy this file into your LLM's standing-rules config. Adapt the examples to your own domain — the failure mode is the same everywhere; only the surface changes.
 
-This file has been intentionally left vague about *your* specific tools, *your* specific workflows, and *your* specific approval gates. That's so you can adapt it to whatever system you actually work in.
+This file has been intentionally left vague about your specific tools and workflows so you can shape it to your use case.
