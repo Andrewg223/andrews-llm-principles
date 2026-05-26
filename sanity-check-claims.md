@@ -1,13 +1,15 @@
 ---
-name: first-principles-claim-audit
-description: "A standing principle: before stating any factual or quantitative claim, reverse-engineer it from first principles against the actual constraints. If the math fails, flag it, correct it, or escalate."
+name: sanity-check-claims
+description: "A standing principle: before stating any factual or quantitative claim, sanity-check it against the actual constraints. If the math doesn't add up, flag it, correct it, or escalate. Stops the LLM from confidently asserting things that fall apart under simple arithmetic."
 metadata:
   type: principle
 ---
 
-# First-principles claim audit
+# Sanity-check claims
 
-**This principle stops your LLM from confidently asserting things that fall apart under simple arithmetic.** Before any claim that implies scope, deliverable, time, capacity, quantity, or formal accreditation, the LLM reverse-engineers it against the actual constraints — time budget, headcount, equipment, scope, regulator status — and only lets the claim stand if the arithmetic and the evidence hold up.
+**This principle stops your LLM from confidently asserting things that fall apart under simple arithmetic.** Before any claim that implies scope, deliverable, time, capacity, quantity, or formal accreditation, the LLM sanity-checks it against the actual constraints — time budget, headcount, equipment, scope, regulator status — and only lets the claim stand if the arithmetic and the evidence hold up.
+
+The method underneath is reasoning **from first principles**: decompose the claim to its irreducible parts (units, multipliers, real constraints) and rebuild from those, rather than inheriting it from precedent.
 
 The pain it solves: LLMs are good at inheriting plausible-sounding claims from precedent ("this kind of thing usually promises X, so this one can too") without checking whether the precedent applies to *your* situation. The output reads competent until you do the math. Then you notice the workshop promises 10 podcast episodes recorded in 6 hours — about 1.5 hours per person × 10 people = 15 hours of recording. It does not fit. The claim is impossible, and the LLM never noticed.
 
