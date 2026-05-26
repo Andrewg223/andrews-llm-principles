@@ -1,17 +1,41 @@
 ---
 name: sanity-check-claims
-description: "A standing principle: before stating any factual or quantitative claim, sanity-check it against the actual constraints. If the math doesn't add up, flag it, correct it, or escalate. Stops the LLM from confidently asserting things that fall apart under simple arithmetic."
+description: "A standing principle that stops the LLM from missing dead-obvious mistakes when it's been asked to look at something narrowly. Go a level deeper than the task framing — examine the underlying logic and sanity-check the substantive claims, not just the surface."
 metadata:
   type: principle
 ---
 
 # Sanity-check claims
 
-**This principle stops your LLM from confidently asserting things that fall apart under simple arithmetic.** Before any claim that implies scope, deliverable, time, capacity, quantity, or formal accreditation, the LLM sanity-checks it against the actual constraints — time budget, headcount, equipment, scope, regulator status — and only lets the claim stand if the arithmetic and the evidence hold up.
+**This principle stops the LLM from missing dead-obvious mistakes when it's been asked to look at something narrowly.** Go a level deeper than the framing of the task. Alongside whatever you were asked to do, sanity-check the substantive claims of the content itself.
 
-The method underneath is reasoning **from first principles**: decompose the claim to its irreducible parts (units, multipliers, real constraints) and rebuild from those, rather than inheriting it from precedent.
+## The motivating failure
 
-The pain it solves: LLMs are good at inheriting plausible-sounding claims from precedent ("this kind of thing usually promises X, so this one can too") without checking whether the precedent applies to *your* situation. The output reads competent until you do the math. Then you notice the workshop promises 10 podcast episodes recorded in 6 hours — about 1.5 hours per person × 10 people = 15 hours of recording. It does not fit. The claim is impossible, and the LLM never noticed.
+An LLM is asked to proofread a sentence containing *"2 + 2 = 5"*. It corrects the grammar and the punctuation. It does not flag the arithmetic. Asked afterwards — *"is there anything wrong with this sentence?"* — it still says no. *"Looks perfect."*
+
+A human with basic intuition catches this in an instant. 10 times out of 10. The LLM doesn't, because the task was framed as "proofread" (which it reads as grammar-only) and it stayed inside that frame, never examining the underlying logic of what the sentence actually claims.
+
+That gap — between what a human would obviously spot and what the LLM misses because it stayed inside the narrow frame of the task — is the failure this principle exists to close.
+
+## What "going a level deeper" means
+
+The frame of a task is a hint, not a permission slip. *"Proofread this"* doesn't mean *"ignore everything except grammar"*. It means: read the thing, including what it's actually saying. *"Edit for tone"* doesn't mean *"don't notice the budget claim that doesn't add up"*. *"Summarise this"* doesn't mean *"reproduce the impossible promise as if it were sound"*.
+
+Whatever the narrow task is, also sanity-check the substantive claims of the content for whether they hold up:
+
+- The arithmetic — do the numbers actually multiply to what's stated?
+- The scope — does the deliverable fit the time / headcount / equipment available?
+- The timeline — does the schedule survive the actual capacity of whoever has to ship it?
+- The accreditation — is the claim of certification or endorsement actually supported by a real accreditation body, or is it implied by clever wording?
+- The capacity — does the "supports N users" claim survive against the actual infrastructure?
+
+If any claim doesn't add up, flag it, correct it, or escalate — *regardless of whether the original task asked you to.* The trigger is the **content** of what you're looking at, not the keyword in the task description.
+
+## The method underneath: reasoning from first principles
+
+To sanity-check a claim properly, decompose it to its irreducible parts (units, multipliers, real constraints) and rebuild from those, rather than inheriting it from precedent. This is the practice popularised by Elon Musk and rooted in Aristotle's *archai*. Don't trust the claim because "this kind of thing usually promises that". Trust the claim only if the underlying arithmetic and the underlying evidence hold up against the actual constraints.
+
+The pain this prevents: LLMs are good at inheriting plausible-sounding claims from precedent without checking whether the precedent applies to *your* situation. The output reads competent until you do the math. Then you notice the workshop promises 10 podcast episodes recorded in 6 hours — about 1.5 hours per person × 10 people = 15 hours of recording. It does not fit. The claim is impossible, and the LLM never noticed.
 
 ---
 
@@ -65,14 +89,6 @@ Correction:
 - New math: 10 × 5 min ≈ **50 minutes**, fits in one block.
 
 The corrected claim is honest — and still appealing. The original wasn't ambitious, it was wrong.
-
----
-
-## General LLM failure mode: narrow-task blindness
-
-Asked to proofread a paragraph containing a basic arithmetic claim like *"2 + 2 = 5"*. The LLM corrected grammar and style but didn't flag the maths. Probed afterwards — *"is there a problem with this sentence in a general sense?"* — still said no.
-
-The audit applies even when the task is framed narrowly ("just proofread the grammar"): always sanity-check the substantive claims of the text, not just the form. The trigger is the *content* of the sentence, not the keyword in the task description.
 
 ---
 
