@@ -1,17 +1,25 @@
 ---
 name: avoid-narrow-framing
-description: "A standing principle: when iterating, watch for the patch loop — the LLM stuck in a narrow solution-space, each small fix introducing a new break, the original problem still there. The fix isn't another patch; it's stepping back to a wider scope and questioning whether the framing itself is wrong."
+description: "A standing principle: stop the LLM from obsessing over a small piece of the problem when the actual scope is wider. When iteration in a narrow solution-space keeps failing, the LLM doesn't need another small fix — it needs to get unstuck by stepping back and questioning whether the framing itself is wrong."
 metadata:
   type: principle
 ---
 
 # Avoid narrow framing
 
-**This principle stops your LLM from getting trapped in a narrow solution-space, iterating endlessly on small fixes without realising the actual scope of the problem is wider.** When the same kind of small adjustment keeps failing, the answer is rarely a better small adjustment — it's stepping back, questioning the framing, and rebuilding from the right scope.
+**This principle stops your LLM from obsessing over a small detail when the actual scope of the problem is wider, and gets it unstuck from the patch loop.** When the same kind of small adjustment keeps failing, the answer is rarely a better small adjustment — it's stepping back, questioning the framing, and rebuilding from the right scope.
 
-The pain it solves: LLMs (and humans) default to fixing what's directly in front of them. A paragraph isn't landing — try a different verb. The verb fix breaks the rhythm — fix the rhythm. The rhythm fix changes the meaning — fix the meaning. The meaning fix turns the tone academic again — fix the tone. Five iterations later the paragraph is unrecognisable, the original problem is still there, and each fix is fighting the previous one. The LLM has been trapped in a tiny solution-space the whole time, never pausing to ask whether the section needs rebuilding from a wider scope, or whether it was even the right piece to be working on.
+The pain it solves: LLMs (and humans) default to fixing what's directly in front of them. The LLM obsesses on the visible symptom — a button that looks off, a sentence that doesn't land, a function output that's wrong — and pours iteration after iteration into that one piece. A paragraph isn't landing → try a different verb. The verb fix breaks the rhythm → fix the rhythm. The rhythm fix changes the meaning → fix the meaning. The meaning fix turns the tone academic again → fix the tone. Five iterations later the paragraph is unrecognisable, the original problem is still there, and each fix is fighting the previous one. The LLM has been stuck in a tiny solution-space the whole time, never pausing to ask whether the section needs rebuilding from a wider scope, or whether it was even the right piece to be working on.
 
-The same shape shows up in code, design, conversation, process, anywhere iteration happens.
+Common shapes the obsession takes:
+
+- The LLM is endlessly redesigning a button when the entire landing page structure is broken.
+- The LLM is replacing words with synonyms when an entire perspective change is needed.
+- The LLM is tweaking CSS padding when the underlying layout grid is wrong.
+- The LLM is polishing a sentence when the paragraph's argument is the actual problem.
+- The LLM is adjusting one function's output when the data flow upstream is broken.
+
+The same shape shows up in code, design, conversation, process, anywhere iteration happens. Getting unstuck always means widening the scope, not narrowing further.
 
 ---
 
@@ -41,19 +49,21 @@ The user often signals the same thing: *"still not landing", "still broken", "th
 
 ---
 
-## What to do when narrow framing fires
+## What to do when narrow framing fires — getting unstuck
 
-1. **Name the wider scope.** Say it explicitly: *"I've been adjusting [X] for two attempts. The problem may actually be [the wider Y that contains X]."* Stating it forces the LLM out of the local view.
+1. **Name what you're obsessing on, and name the wider scope.** Say it explicitly: *"I've been adjusting [the button] for two attempts. The problem may actually be [the landing page structure that contains the button]."* Stating it forces the LLM out of the local view. This is the single step that breaks the spell.
 
-2. **Stop iterating.** The next move is not another small fix.
+2. **Stop iterating.** The next move is not another small fix. The patch loop will not converge.
 
 3. **Question the framing.** Is this even the right piece to be working on at this scope? Or is the framing pulling the focus to the wrong layer?
-   - If the framing is wrong → shift scope to what genuinely needs solving.
+   - If the framing is wrong → shift scope entirely to what genuinely needs solving. The button wasn't the problem; the page structure was.
    - If the framing is right but iteration has failed → reset the piece (next step).
 
-4. **Reset, don't patch.** Delete the affected piece. Re-read the original intent. Rebuild it from scratch at the right scope, ignoring every prior attempt. Don't try to preserve work. Don't try to honour prior decisions — the prior decisions are why you're stuck.
+4. **Reset, don't patch.** Delete the affected piece. Re-read the original intent. Rebuild from scratch at the right scope, ignoring every prior attempt. Don't try to preserve work. Don't try to honour prior decisions — the prior decisions are why you're stuck.
 
 5. **Carry the lesson, not the wreckage.** The failed iterations taught you what doesn't work. That knowledge transfers to the rebuild. The half-finished artefacts of the failed attempts don't.
+
+Getting unstuck always means widening the scope. It never means narrowing further.
 
 ---
 
