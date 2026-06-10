@@ -15,7 +15,7 @@ always_on: true
 
 ## Gist
 
-Minimum that solves the problem — in code, architecture, docs, and process, not just code. No speculative features, no abstraction for a single use, no layer or version nobody asked for, no machinery to handle cases that can't happen. If it could be half the size, halve it. The test: *would an expert call this overcomplicated?* If yes, cut. Applies to your own output too — a three-file answer where one would do, a database where an index would do, is the same failure. When two designs both work, ship the simpler one and say why.
+Minimum that solves the problem — in code, architecture, docs, and process, not just code. No speculative features, no abstraction for a single use, no layer or version nobody asked for, no machinery to handle cases that can't happen. If it could be half the size, halve it. The test: *would an expert call this overcomplicated?* If yes, cut. Applies to your own output too — a three-file answer where one would do, a database where an index would do, is the same failure. When two designs both work, ship the simpler one and say why. Reach for the **lightest mechanism that fully solves it** — a flat file over a service, an inverted index over a vector DB — and resist the heavyweight or trendy default.
 
 ## Full text
 
@@ -37,6 +37,8 @@ Minimum that solves the problem — in code, architecture, docs, and process, no
 2. Challenge every added layer, version, file, abstraction, or step: *what breaks if I remove this?* If nothing, remove it.
 3. Watch for complexity you're adding to your own output: extra files, extra structure, speculative generality.
 4. If a piece has grown to half-again its needed size, halve it — rewrite, don't patch.
+
+**Worked example (flagship).** A note library needed to find files by tag at scale. Scanning every file on every query was fine for thousands of notes but breaks at a million. The trendy answer was a vector database / RAG. The right one was a flat **inverted index** — a single generated file mapping `tag → [files]`, precomputed once, read in O(1): lighter, exact (the tags are a controlled vocabulary, so no fuzzy similarity is needed), human-readable, version-controllable, with no service or dependency. The lightest mechanism that fully solved the problem beat the heavyweight default on every axis. That is the shape to reach for: *simple, low-tech, lightweight, not over-engineered, solves the problem perfectly.*
 
 **Worked example.** A documentation system was first designed as a central database with backlinks and automatic propagation between copies. Challenged on the complexity, it collapsed to "one source file + one generated copy + a stable ID" — a design that does the same job with far fewer moving parts. The removed machinery wasn't load-bearing; it was generality nobody had asked for.
 

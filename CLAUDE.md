@@ -38,6 +38,17 @@ Analogy: a book's ISBN versus its title. Re-title the book, change the cover —
 
 ---
 
+## The principle gate (what qualifies as a principle)
+
+A principle is a **universal** guard rule — one that holds across contexts, people, and assistants at a general level. Before you save a rule as a principle, test it:
+
+> Take the rule out of context and drop it into a brand-new assistant with nothing else — only this one rule. Does it stand on its own as a general rule that's immediately applicable to anyone?
+
+- **Yes** → it's a principle. Install it.
+- **No** — it only makes sense inside your specific setup, tools, or workflow → it is **not a principle**. It's a *working rule*: keep it in your assistant's project/config instructions, not in this principle library.
+
+Example of a rule that fails the gate: "keep my index files in sync." It assumes a particular filing system exists, so it means nothing to a fresh assistant. Useful, but a working rule — not a principle. When in doubt, default to working rule.
+
 ## How to install (3 steps)
 
 You need two places: an **always-loaded config** your assistant reads every session (for Claude Code that's a `CLAUDE.md` at your project or home directory; adapt for your tool), and a **folder** where these principle files live so your assistant can read full text on demand.
